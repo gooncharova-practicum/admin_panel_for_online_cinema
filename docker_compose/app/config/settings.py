@@ -21,7 +21,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = os.environ.get('DEBUG', False) == 'True'
 
 ALLOWED_HOSTS = []
-allowed_hosts = os.environ.get('ALLOWED_HOSTS', ['127.0.0.1'])
+allowed_hosts = os.environ.get('ALLOWED_HOSTS', '127.0.0.1')
 
 
 if allowed_hosts:
@@ -42,6 +42,7 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -76,4 +77,4 @@ LOGGING = {
             'propagate': False,
         }
     },
-} 
+}

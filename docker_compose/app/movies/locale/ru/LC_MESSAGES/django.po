@@ -25,7 +25,7 @@ msgid "-empty-"
 msgstr "-нет данных-"
 
 #: movies/apps.py:8
-msgid "Movies"
+msgid "movies"
 msgstr "Фильмы"
 
 #: movies/models.py:9 movies/models.py:101
@@ -70,7 +70,7 @@ msgstr ""
 
 #: movies/models.py:54
 #, fuzzy
-#| msgid "Movies"
+#| msgid "movies"
 msgid "movie"
 msgstr "Фильмы"
 
