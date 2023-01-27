@@ -5,10 +5,6 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
-__all__ = ('Genre',
-           'Person')
-
-
 class TimeStampedMixin(models.Model):
     created = models.DateTimeField(_('created'), auto_now_add=True)
     modified = models.DateTimeField(_('modified'), auto_now=True)
@@ -26,13 +22,12 @@ class UUIDMixin(models.Model):
 
 class Genre(UUIDMixin, TimeStampedMixin):
     name = models.CharField(_('name'), max_length=255, unique=True)
-    description = models.TextField(_('description'), blank=True)
+    description = models.TextField(_('description'), null=True, blank=True)
 
     class Meta:
         db_table = "content\".\"genre"
         indexes = [
-            models.Index(fields=['name'],
-                         name='genre_name_idx'),
+            models.Index(fields=['name'], name='genre_name_idx'),
         ]
         verbose_name = _('Genre')
         verbose_name_plural = _('Genres')
@@ -47,8 +42,7 @@ class Person(UUIDMixin, TimeStampedMixin):
     class Meta:
         db_table = "content\".\"person"
         indexes = [
-            models.Index(fields=['full_name'],
-                         name='person_full_name_idx'),
+            models.Index(fields=['full_name'], name='person_full_name_idx'),
         ]
         verbose_name = _('Person')
         verbose_name_plural = _('Persons')
@@ -67,16 +61,18 @@ class FilmWork(UUIDMixin, TimeStampedMixin):
     ]
 
     title = models.CharField(_('title'), max_length=255)
-    description = models.TextField(_('description'), blank=True)
-    creation_date = models.DateField(_('creation_date'))
-    rating = models.FloatField(_('raiting'), blank=True,
-                               validators=[MinValueValidator(0.0),
-                                           MaxValueValidator(100.0)])
+    description = models.TextField(_('description'), null=True, blank=True)
+    creation_date = models.DateField(_('creation_date'), null=True)
+    rating = models.FloatField(
+        _('raiting'),
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(0.0), MaxValueValidator(100.0)],
+    )
     type = models.CharField(_('type'), choices=TYPES, max_length=255)
     genres = models.ManyToManyField(Genre, through='GenreFilmwork')
     persons = models.ManyToManyField(Person, through='PersonFilmwork')
-    file_path = models.FileField(_('file'), blank=True,
-                                 null=True, upload_to='movies/')
+    file_path = models.FileField(_('file'), blank=True, null=True, upload_to='movies/')
 
     class Meta:
         db_table = "content\".\"film_work"
@@ -92,12 +88,12 @@ class FilmWork(UUIDMixin, TimeStampedMixin):
 
 
 class GenreFilmwork(UUIDMixin):
-    film_work = models.ForeignKey('FilmWork',
-                                  verbose_name=_('filmwork'),
-                                  on_delete=models.CASCADE)
-    genre = models.ForeignKey('Genre',
-                              verbose_name=_('genre'),
-                              on_delete=models.CASCADE)
+    film_work = models.ForeignKey(
+        'FilmWork', verbose_name=_('filmwork'), on_delete=models.CASCADE
+    )
+    genre = models.ForeignKey(
+        'Genre', verbose_name=_('genre'), on_delete=models.CASCADE
+    )
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -107,13 +103,23 @@ class GenreFilmwork(UUIDMixin):
 
 
 class PersonFilmwork(UUIDMixin):
-    film_work = models.ForeignKey('Filmwork',
-                                  verbose_name=_('filmwork'),
-                                  on_delete=models.CASCADE)
-    person = models.ForeignKey('Person',
-                               verbose_name=_('person'),
-                               on_delete=models.CASCADE)
-    role = models.TextField(_('role'))
+
+    ACTOR = 'actor'
+    DIRECTOR = 'director'
+    WRITER = 'writer'
+    TYPES = [
+        (ACTOR, _('actor')),
+        (DIRECTOR, _('director')),
+        (WRITER, _('writer')),
+    ]
+
+    film_work = models.ForeignKey(
+        'Filmwork', verbose_name=_('filmwork'), on_delete=models.CASCADE
+    )
+    person = models.ForeignKey(
+        'Person', verbose_name=_('person'), on_delete=models.CASCADE
+    )
+    role = models.TextField(_('role'), choices=TYPES, max_length=255)
     created = models.DateTimeField(_('created'), auto_now_add=True)
 
     class Meta:
