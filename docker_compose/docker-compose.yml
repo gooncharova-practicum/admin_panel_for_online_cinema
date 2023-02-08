@@ -3,7 +3,7 @@ services:
   db:
     image: postgres:13
     restart: always
-    container_name: postgres
+    container_name: postgres_app
     environment:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_USER=${DB_USER}
@@ -21,6 +21,8 @@ services:
       - static_volume:/app/static
     depends_on:
       - db
+    env_file:
+      - ./.env
 
   nginx:
     container_name: nginx

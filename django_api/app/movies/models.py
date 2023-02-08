@@ -100,6 +100,10 @@ class GenreFilmwork(UUIDMixin):
         db_table = "content\".\"genre_film_work"
         verbose_name = _('Film work genre')
         verbose_name_plural = _('Film work genres')
+        constraints = [
+            models.UniqueConstraint(fields=['film_work', 'genre'],
+                                    name='unique genre_filmwork')
+        ]
 
 
 class PersonFilmwork(UUIDMixin):
@@ -126,3 +130,7 @@ class PersonFilmwork(UUIDMixin):
         db_table = "content\".\"person_film_work"
         verbose_name = _('Person in filmwork')
         verbose_name_plural = _('Persons in filmworks')
+        constraints = [
+            models.UniqueConstraint(fields=['film_work', 'person', 'role'],
+                                    name='unique filmwork_person_role')
+        ]

@@ -23,7 +23,7 @@ msgid "-empty-"
 msgstr ""
 
 #: movies/apps.py:8
-msgid "movies"
+msgid "Movies"
 msgstr ""
 
 #: movies/models.py:9 movies/models.py:101
